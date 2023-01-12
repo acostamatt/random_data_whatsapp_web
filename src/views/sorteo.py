@@ -22,7 +22,7 @@ class Sorteo(QtWidgets.QWidget):
         self.__boton_sorteo = self.ui.botonSortear
         self.__boton_listar_ganadores = self.ui.botonListarSorteos
 
-        self.set_date_previous_month(self.__fecha_desde)
+        self.set_date_previous_days(self.__fecha_desde)
         self.set_date_today(self.__fecha_hasta)
 
         self.__boton_obtener_datos.clicked.connect(self.obtener_datos)
@@ -31,6 +31,10 @@ class Sorteo(QtWidgets.QWidget):
 
     def obtener_datos(self):
         self.sorteo_controller.execute()
+        msj_label = f"<div style='color:#008F39'><strong>Datos obtenidos correctamente</strong></div>"
+
+        self.ui.labelSorteo.setText("")
+        self.ui.labelSorteo.setText(msj_label)
 
     def on_enviar_datos_sorteo(self):
         data_sorteo = self.sorteo_controller.get_draw(self.__fecha_desde.text(), self.__fecha_hasta.text())
@@ -41,12 +45,12 @@ class Sorteo(QtWidgets.QWidget):
             contacto = data['contacto']
             mensaje = data['mensaje']
             fecha = data['fecha']
-            msj = f"<div style='color:#008F39'><strong>{contacto}</strong></div><div><p>{mensaje}</p></div><div><p>{fecha}</p></div>"
+            msj_label = f"<div style='color:#008F39'><strong>{contacto}</strong></div><div><p>{mensaje}</p></div><div><p>{fecha}</p></div>"
         except:
-            msj = f"<div style='color:#008F39'><strong>{data}</strong></div>"
+            msj_label = f"<div style='color:#FF0000'><strong>{data}</strong></div>"
 
         self.ui.labelSorteo.setText("")
-        self.ui.labelSorteo.setText(msj)
+        self.ui.labelSorteo.setText(msj_label)
 
 
     def listar_ganadores(self):
@@ -60,7 +64,7 @@ class Sorteo(QtWidgets.QWidget):
     def set_date_today(self, date_time_widget: QDateTime):
         date_time_widget.setDateTime(QtCore.QDateTime.currentDateTime())
 
-    def set_date_previous_month(self, date_time_widget: QDateTime):
+    def set_date_previous_days(self, date_time_widget: QDateTime):
         fecha_desde = QtCore.QDateTime.addDays(QtCore.QDateTime.currentDateTime(), -7)
         date_time_widget.setDateTime(fecha_desde)
 
