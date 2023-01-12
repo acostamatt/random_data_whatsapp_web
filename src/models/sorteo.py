@@ -44,22 +44,14 @@ class Sorteo:
             # Con fetchall traemos todas las filas
             return len(cursor.fetchall())
 
-    def checkSavedDraw(self, id_mensaje):
-        with self.conn.cursor() as cursor:
-			
-            select = "SELECT id FROM sorteos WHERE id_mensaje = %s;"
-            cursor.execute(select, (id_mensaje))
-
-            # Con fetchall traemos todas las filas
-            return len(cursor.fetchall())
-
     def generateDraw(self, fecha_desde, fecha_hasta):
         with self.conn.cursor(pymysql.cursors.DictCursor) as cursor:
-            select = "SELECT * FROM mensajes WHERE fecha BETWEEN %s AND %s ORDER BY rand() LIMIT 1;"
+            select = "SELECT m.id, m.contacto, m.mensaje, m.fecha FROM mensajes m WHERE NOT EXISTS (SELECT mensajes.id FROM mensajes, sorteos WHERE sorteos.id_mensaje = m.id) AND m.fecha BETWEEN %s AND %s ORDER BY rand() LIMIT 1;"
+             
             cursor.execute(select, (fecha_desde, fecha_hasta))
 
             mensaje_sorteo = cursor.fetchone()
-            if not self.checkSavedDraw(mensaje_sorteo['id']):
+            if mensaje_sorteo:
                 self.insertSorteo(mensaje_sorteo['id'], fecha_desde, fecha_hasta)
                 return mensaje_sorteo
             else:
