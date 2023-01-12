@@ -24,6 +24,9 @@ class SorteoController:
         self.chrome_options = Options()
         self.xpath = By.XPATH
         self.chrome_options.add_argument("--user-data-dir=chrome-data")
+
+        os.path.exists("chrome-data") and self.chrome_options.add_argument('--headless')
+
         self.driver = webdriver.Chrome('chromedriver', options=self.chrome_options)
         self.wait = WebDriverWait(self.driver, 60, ignored_exceptions=[StaleElementReferenceException])
         self.actions = ActionChains(self.driver)
