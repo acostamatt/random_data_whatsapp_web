@@ -2,6 +2,7 @@ from PySide6 import QtWidgets, QtCore
 from views.base.table_view_sorteo import Ui_TableSorteo
 from models.table_sorteo import SorteoTableModel
 
+
 class TableSorteo(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)

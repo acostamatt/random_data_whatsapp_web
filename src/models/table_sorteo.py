@@ -8,7 +8,14 @@ import datetime
 class SorteoTableModel(QAbstractTableModel):
     def __init__(self):
         QAbstractTableModel.__init__(self)
-        self.headers = ["Contacto", "Mensaje", "Fecha Mensaje", "Fecha Desde", "Fecha Hasta", "Fecha Sorteo"]
+        self.headers = [
+            "Contacto",
+            "Mensaje",
+            "Fecha Mensaje",
+            "Fecha Desde",
+            "Fecha Hasta",
+            "Fecha Sorteo",
+        ]
         self.headers_widths = [150, 750, 150, 150, 150, 150]
         self.sorteos = []
 
@@ -30,25 +37,25 @@ class SorteoTableModel(QAbstractTableModel):
         sorteo = self.sorteos[index.row()]
         if role == Qt.DisplayRole:
             if index.column() == 0:
-                return sorteo['contacto']
+                return sorteo["contacto"]
 
             if index.column() == 1:
-                return sorteo['mensaje']
+                return sorteo["mensaje"]
 
             if index.column() == 2:
-                return self.getFormarDateStr(sorteo['fecha_mensaje'])
+                return self.getFormarDateStr(sorteo["fecha_mensaje"])
 
             if index.column() == 3:
-                return self.getFormarDateStr(sorteo['fecha_desde'])
+                return self.getFormarDateStr(sorteo["fecha_desde"])
 
             if index.column() == 4:
-                return self.getFormarDateStr(sorteo['fecha_hasta'])
-            
+                return self.getFormarDateStr(sorteo["fecha_hasta"])
+
             if index.column() == 5:
-                return self.getFormarDateStr(sorteo['fecha_sorteo'])
+                return self.getFormarDateStr(sorteo["fecha_sorteo"])
 
         if role == Qt.UserRole:
-            return sorteo['id']
+            return sorteo["id"]
 
     def headerData(self, section, orientation, role=None):
         if orientation == Qt.Horizontal:
