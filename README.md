@@ -1,4 +1,4 @@
-# COOPERADORA_QT
+# RANDOM_DATA_WHATSAPP_WEB
 
 Desarrollado en python y qt.
 
@@ -13,3 +13,17 @@ Dependiendo el sistema operativo en el que nos encontremos podemos seguir éste 
 Una vez instaldo python junto a pip, instalamos las dependencias del proyecto:
 
 ```pip install -r requirements.txt```
+
+## Credenciales
+
+Cambiamos el nombre del archivo .env_example por .env y modificamos los valores correspondientes.
+
+## Ejecutable
+
+Podemos generar un ejecutable tanto del programa principal,
+
+```pyinstaller src/main.py --onefile```
+
+cómo de la automatización de mensajes.
+
+```pyinstaller src/run_thread.py --onefile```
