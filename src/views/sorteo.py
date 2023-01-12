@@ -24,16 +24,17 @@ class Sorteo(QtWidgets.QWidget):
 
         self.set_date_previous_days(self.__fecha_desde)
         self.set_date_today(self.__fecha_hasta)
+        self.set_maximum_height_view(165)
 
         self.__boton_obtener_datos.clicked.connect(self.obtener_datos)
         self.__boton_sorteo.clicked.connect(self.on_enviar_datos_sorteo)
         self.__boton_listar_ganadores.clicked.connect(self.listar_ganadores)
 
     def obtener_datos(self):
-        self.sorteo_controller.execute()
+        # self.sorteo_controller.execute()
+        self.set_maximum_height_view(165)
         msj_label = f"<div style='color:#008F39'><strong>Datos obtenidos correctamente</strong></div>"
 
-        self.ui.labelSorteo.setText("")
         self.ui.labelSorteo.setText(msj_label)
 
     def on_enviar_datos_sorteo(self):
@@ -46,10 +47,13 @@ class Sorteo(QtWidgets.QWidget):
             mensaje = data['mensaje']
             fecha = data['fecha']
             msj_label = f"<div style='color:#008F39'><strong>{contacto}</strong></div><div><p>{mensaje}</p></div><div><p>{fecha}</p></div>"
+            self.set_maximum_height_view(300)
+
         except:
             msj_label = f"<div style='color:#FF0000'><strong>{data}</strong></div>"
+            self.set_maximum_height_view(165)
 
-        self.ui.labelSorteo.setText("")
+
         self.ui.labelSorteo.setText(msj_label)
 
 
@@ -67,4 +71,8 @@ class Sorteo(QtWidgets.QWidget):
     def set_date_previous_days(self, date_time_widget: QDateTime):
         fecha_desde = QtCore.QDateTime.addDays(QtCore.QDateTime.currentDateTime(), -7)
         date_time_widget.setDateTime(fecha_desde)
+
+    def set_maximum_height_view(self, int_height):
+        self.setFixedHeight(int_height)
+        self.ui.labelSorteo.setText("")
 
