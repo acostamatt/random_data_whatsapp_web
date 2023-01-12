@@ -68,3 +68,13 @@ class Sorteo:
     def getTodayDate(self):
         fecha_str = datetime.datetime.strftime(datetime.datetime.now(), "%d/%m/%Y %H:%M")
         return datetime.datetime.strptime(fecha_str, "%d/%m/%Y %H:%M")
+    
+    def listSorteos(self):
+        with self.conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            select = "SELECT sorteos.id, mensajes.contacto AS contacto, mensajes.mensaje AS mensaje, mensajes.fecha AS fecha_mensaje, sorteos.fecha_desde AS fecha_desde, sorteos.fecha_hasta AS fecha_hasta, sorteos.fecha_sorteo AS fecha_sorteo FROM mensajes, sorteos WHERE mensajes.id = sorteos.id_mensaje ORDER BY sorteos.id DESC LIMIT 10;"
+
+            cursor.execute(select)
+
+            return cursor.fetchall()
+
+

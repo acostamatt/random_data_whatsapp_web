@@ -1,7 +1,10 @@
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtCore import QDateTime
 from views.base.sorteo_base import Ui_Form
+from views.table_sorteo import TableSorteo
 from controllers.sorteo import SorteoController
+from models.table_sorteo import SorteoTableModel
+
 
 class Sorteo(QtWidgets.QWidget):
     def __init__(self):
@@ -47,9 +50,13 @@ class Sorteo(QtWidgets.QWidget):
 
 
     def listar_ganadores(self):
-        pass
+        self.__table_sorteo = TableSorteo()
+        self.__table_model_sorteo = SorteoTableModel()
+        self.__table_sorteo.set_sorteo_table_model(self.__table_model_sorteo)
+        self.__table_sorteo.setFixedWidth(1500)
+        self.__table_sorteo.show()
 
-
+    
     def set_date_today(self, date_time_widget: QDateTime):
         date_time_widget.setDateTime(QtCore.QDateTime.currentDateTime())
 
