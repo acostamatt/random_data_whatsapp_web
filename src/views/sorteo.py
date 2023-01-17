@@ -1,9 +1,9 @@
-from PySide6 import QtWidgets, QtCore
+from controllers.sorteo import SorteoController
+from models.table_sorteo import SorteoTableModel
+from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import QDateTime
 from views.base.sorteo_base import Ui_Form
 from views.table_sorteo import TableSorteo
-from controllers.sorteo import SorteoController
-from models.table_sorteo import SorteoTableModel
 
 
 class Sorteo(QtWidgets.QWidget):
@@ -31,7 +31,7 @@ class Sorteo(QtWidgets.QWidget):
         self.__boton_listar_ganadores.clicked.connect(self.listar_ganadores)
 
     def obtener_datos(self):
-        # self.sorteo_controller.execute()
+        self.sorteo_controller.execute()
         self.set_maximum_height_view(165)
         msj_label = f"<div style='color:#008F39'><strong>Datos obtenidos correctamente</strong></div>"
 

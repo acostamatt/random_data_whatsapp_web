@@ -1,8 +1,8 @@
 import sys
 
+from controllers.sorteo import SorteoController
 from PySide6.QtWidgets import QApplication
 from views.sorteo import Sorteo
-from controllers.sorteo import SorteoController
 
 
 class App(QApplication):

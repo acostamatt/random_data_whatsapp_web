@@ -1,5 +1,6 @@
-import time
 import threading
+import time
+
 from controllers.sorteo import SorteoController
 
 sorteo = SorteoController()

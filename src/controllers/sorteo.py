@@ -1,20 +1,19 @@
+import os
+import threading
+import time
+
+from models.sorteo import Sorteo
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
 )
-
-import os
-import time
-import threading
-
-from models.sorteo import Sorteo
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class SorteoController:
@@ -33,7 +32,9 @@ class SorteoController:
 
         self.driver = webdriver.Chrome("chromedriver", options=self.chrome_options)
         self.wait = WebDriverWait(
-            self.driver, 60, ignored_exceptions=[StaleElementReferenceException]
+            self.driver,
+            80,
+            ignored_exceptions=(StaleElementReferenceException, NoSuchElementException),
         )
         self.actions = ActionChains(self.driver)
         self.driver.get("https://web.whatsapp.com/")
@@ -42,41 +43,53 @@ class SorteoController:
         self.setup()
         chats_list = self.get_chat_list()
 
-        time.sleep(6)
         for chat_list in chats_list:
-            self.move_to_element(chat_list)
-            contacto = chat_list.find_element(self.xpath, './/span[@dir="auto"]').text
-            panel_messages = chat_list.find_elements(
-                self.xpath, '//div[@data-testid="conversation-panel-messages"]'
-            )
-            time.sleep(4)
+
+            try:
+                self.actions.move_to_element(chat_list).click().perform()
+                time.sleep(4)
+
+                contact = chat_list.find_element(
+                    self.xpath, './/span[@dir="auto"]'
+                ).text
+                panel_messages = chat_list.find_elements(
+                    self.xpath, '//div[@data-testid="conversation-panel-messages"]'
+                )
+            except:
+                continue
+
             for panel_message in panel_messages:
-                elements_chats = panel_message.find_elements(
-                    self.xpath, '//span[@class="i0jNr selectable-text copyable-text"]'
+                chats = panel_message.find_elements(
+                    self.xpath, '//div[@class="copyable-text"]'
                 )
 
-                for element_chat in elements_chats:
-                    move_path_chat = element_chat.find_element(self.xpath, "./../../..")
+                for chat in chats:
+                    data_plain_text = chat.get_attribute("data-pre-plain-text")
 
                     try:
-                        data_chat = move_path_chat.find_element(
-                            self.xpath, './/div[@class="copyable-text"]'
-                        ).get_attribute("data-pre-plain-text")
+
+                        message = chat.find_element(self.xpath, "./div/span/span").text
+
                         if (
-                            data_chat.find(self.__WHATSAPP_USER) == -1
-                            and self.__WORD_SEARCH in element_chat.text.lower()
+                            data_plain_text.find(self.__WHATSAPP_USER) == -1
+                            and self.__WORD_SEARCH in message.lower()
                         ):
-                            data_chat = data_chat.translate(
+                            data_plain_text = data_plain_text.translate(
                                 str.maketrans("", "", "[],")
                             )
-                            fecha = (
-                                data_chat.split(" ")[1] + " " + data_chat.split(" ")[0]
+
+                            message_date = (
+                                data_plain_text.split(" ")[1]
+                                + " "
+                                + data_plain_text.split(" ")[0]
                             )
+
                             if not self.modelSorteo.checkSavedMessage(
-                                contacto, element_chat.text, fecha
+                                contact, message, message_date
                             ):
+
                                 self.modelSorteo.insertMensaje(
-                                    contacto, element_chat.text, fecha
+                                    contact, message, message_date
                                 )
                     except:
                         continue
@@ -94,8 +107,8 @@ class SorteoController:
         thread = threading.Thread(target=self.run_time, args=(time_interval,))
         thread.start()
 
-    def get_draw(self, fecha_desde, fecha_hasta):
-        return self.modelSorteo.generateDraw(fecha_desde, fecha_hasta)
+    def get_draw(self, date_from, date_to):
+        return self.modelSorteo.generateDraw(date_from, date_to)
 
     def close(self):
         self.driver.close()
@@ -106,9 +119,9 @@ class SorteoController:
                 (self.xpath, '//div[@data-testid="chat-list"]')
             )
         )
+
+        time.sleep(4)
+
         return self.driver.find_elements(
             self.xpath, '//div[@data-testid="chat-list"]/div/div'
         )
-
-    def move_to_element(self, element):
-        self.actions.move_to_element(element).click().perform()
