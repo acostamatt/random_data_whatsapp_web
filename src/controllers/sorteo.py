@@ -118,6 +118,14 @@ class SorteoController:
         thread = threading.Thread(target=self.run_time, args=(time_interval,))
         thread.start()
 
+    def run_time_execute(self, seconds):
+        self.execute()
+        time.sleep(seconds)
+
+    def init_thread_execute(self):
+        thread = threading.Thread(target=self.run_time_execute, args=(2,))
+        thread.start()
+
     def get_draw(self, date_from, date_to):
         return self.modelSorteo.generateDraw(date_from, date_to)
 
