@@ -1,7 +1,8 @@
-from controllers.sorteo import SorteoController
-from models.table_sorteo import SorteoTableModel
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import QDateTime
+
+from controllers.sorteo import SorteoController
+from models.table_sorteo import SorteoTableModel
 from views.base.sorteo_base import Ui_Form
 from views.table_sorteo import TableSorteo
 

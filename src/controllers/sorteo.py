@@ -2,7 +2,6 @@ import os
 import threading
 import time
 
-from models.sorteo import Sorteo
 from selenium import webdriver
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -14,6 +13,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+
+from models.sorteo import Sorteo
 
 
 class SorteoController:
@@ -27,16 +29,25 @@ class SorteoController:
         self.chrome_options = Options()
         self.xpath = By.XPATH
         self.chrome_options.add_argument("--user-data-dir=chrome-data")
+        self.chrome_options.add_argument("--remote-debugging-port=9222")
+        self.chrome_options.add_argument("--disable-dev-shm-usage")
+        self.chrome_options.add_argument("--no-sandbox")
 
-        os.path.exists("chrome-data") and self.chrome_options.add_argument("--headless")
+        self.chrome_options.add_experimental_option(
+            "excludeSwitches", ["enable-logging"]
+        )
+        self.driver = webdriver.Chrome(
+            ChromeDriverManager().install(), options=self.chrome_options
+        )
 
-        self.driver = webdriver.Chrome("chromedriver", options=self.chrome_options)
         self.wait = WebDriverWait(
             self.driver,
-            80,
+            120,
             ignored_exceptions=(StaleElementReferenceException, NoSuchElementException),
         )
         self.actions = ActionChains(self.driver)
+
+        os.path.exists("chrome-data") and self.driver.minimize_window()
         self.driver.get("https://web.whatsapp.com/")
 
     def execute(self):

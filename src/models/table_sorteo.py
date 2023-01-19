@@ -1,8 +1,9 @@
 import datetime
 
-from models.sorteo import Sorteo
 from PySide6 import QtCore
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
+
+from models.sorteo import Sorteo
 
 
 class SorteoTableModel(QAbstractTableModel):

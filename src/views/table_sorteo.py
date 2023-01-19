@@ -1,5 +1,6 @@
-from models.table_sorteo import SorteoTableModel
 from PySide6 import QtCore, QtWidgets
+
+from models.table_sorteo import SorteoTableModel
 from views.base.table_view_sorteo import Ui_TableSorteo
 
 
